@@ -172,10 +172,10 @@ class FileDescriptorDisassembler:
     
     def renderEnum(self, enum, depth=0, package='', nested=False):
         buffer = '\n'
-        buffer += '%senum %s {\n' % (' '*depth, enum.name)
+        buffer += '%senum %s {\n' % ('  '*depth, enum.name)
         for value in enum.value:
-            buffer += '%s%s = %d;\n' % (' '*(depth+1), value.name, value.number)
-        buffer += '%s}' % (' '*depth)
+            buffer += '%s%s = %d;\n' % ('  '*(depth+1), value.name, value.number)
+        buffer += '%s}' % ('  '*depth)
         buffer += '\n'
         return buffer
 
@@ -186,16 +186,16 @@ class FileDescriptorDisassembler:
                 # message case
                 if field.type == FieldDescriptorProto.TYPE_MESSAGE or field.type == FieldDescriptorProto.TYPE_ENUM:
                     field.type_name = render_type(field.type_name[1:], package)
-                    buffer += '%s%s %s %s = %d;\n' % (' '*depth, self.getLabel(field.label), field.type_name, field.name, field.number)
+                    buffer += '%s%s %s %s = %d;\n' % ('  '*depth, self.getLabel(field.label), field.type_name, field.name, field.number)
                 else:
                     if field.HasField('default_value'):
                         if self.getTypeStr(field.type) == 'string':
                             field.default_value = '"%s"'% field.default_value
-                        buffer += '%s%s %s %s = %d [default = %s];\n' % (' '*depth, self.getLabel(field.label), self.getTypeStr(field.type), field.name, field.number, field.default_value)
+                        buffer += '%s%s %s %s = %d [default = %s];\n' % ('  '*depth, self.getLabel(field.label), self.getTypeStr(field.type), field.name, field.number, field.default_value)
                     else:    
-                        buffer += '%s%s %s %s = %d;\n' % (' '*depth, self.getLabel(field.label), self.getTypeStr(field.type), field.name, field.number)
+                        buffer += '%s%s %s %s = %d;\n' % ('  '*depth, self.getLabel(field.label), self.getTypeStr(field.type), field.name, field.number)
         except ValueError:
-            buffer += '%smessage %s {\n' % (' '*depth, field.name)
+            buffer += '%smessage %s {\n' % ('  '*depth, field.name)
             _package = package+'.'+field.name
             
             if len(field.nested_type)>0:
@@ -207,7 +207,7 @@ class FileDescriptorDisassembler:
             if len(field.field)>0:
                 for field in field.field:
                     buffer += self.renderField(field, depth+1, _package)
-            buffer += '%s}' % (' '*depth)
+            buffer += '%s}' % ('  '*depth)
             buffer += '\n\n'
         return buffer
 
@@ -310,6 +310,7 @@ class ProtobufExtractor:
             print('[!] Unable to read %s' % sys.argv[1])
 
 if __name__ == '__main__':
+    sys.argv.append(r"E:\Program Files (x86)\Steam\steamapps\common\Troubleshooter\Release\bin\ProtoLion.exe")
     if len(sys.argv)>=2:
         print("[i] Extracting from %s ..." % sys.argv[1])
         extractor = ProtobufExtractor(sys.argv[1])
