@@ -43,7 +43,7 @@ def is_valid_filename(filename):
     '''
     Check if given filename may be valid
     '''
-    charset = 'abcdefghijklmnopqrstuvwxyz0123456789-_/$,.[]()'
+    charset = b'abcdefghijklmnopqrstuvwxyz0123456789-_/$,.[]()'
     for char in filename.lower():
         if char not in charset:
             return False
@@ -58,7 +58,7 @@ def decode_varint128(stream):
     count = 0
     for stream_byte in stream:
         count += 1
-        raw_byte = ord(stream_byte)
+        raw_byte = stream_byte
         bits += (bin((raw_byte&0x7F))[2:]).rjust(7,'0')
         if (raw_byte&0x80) != 0x80:
             break
@@ -106,7 +106,7 @@ class ProtobufFieldsWalker:
         offset = 0
         while (not end) and (offset<len(self._stream)):
             # read tag
-            tag = ord(self._stream[offset])
+            tag = self._stream[offset]
             offset += 1
             wire_type = tag&0x7
             if wire_type == 0:
@@ -213,7 +213,7 @@ class FileDescriptorDisassembler:
 
 
     def render(self, filename=None):
-        print '[+] Processing %s' % self.desc.name
+        print('[+] Processing %s' % self.desc.name)
         buffer = ''
         buffer += 'package %s;\n\n' % self.desc.package
         
@@ -257,7 +257,7 @@ class ProtobufExtractor:
             stream = content
             while len(stream)>0:
                 try:
-                    r = stream.index('.proto')
+                    r = stream.index(b'.proto')
                     for j in range(64):
                         try:
                             if decode_varint128(stream[r-j:])[0]==(j+5) and is_valid_filename(stream[r-j+1:r+6]):
@@ -276,7 +276,7 @@ class ProtobufExtractor:
                                         fds  = FileDescriptorProto()
                                         fds.ParseFromString(stream[r-j-1:r-j-1+k])
                                         protos.append(stream[r-j-1:r-j-1+k])
-                                        print '[i] Found protofile %s (%d bytes)' % (stream[r-j+1:r+6], k)
+                                        print('[i] Found protofile %s (%d bytes)' % (stream[r-j+1:r+6], k))
                                         break
                                     except DecodeError:
                                         pass
@@ -298,6 +298,7 @@ class ProtobufExtractor:
                     fds.ParseFromString(content)
                     res = FileDescriptorDisassembler(fds)
                     if len(res.desc.name)>0:
+                        os.makedirs(os.path.dirname(res.desc.name), exist_ok=True)
                         if res.desc.name not in seen:
                             open(res.desc.name+'.protoc','wb').write(content)
                             res.render()
@@ -306,15 +307,15 @@ class ProtobufExtractor:
                     pass
             
         except IOError:
-            print '[!] Unable to read %s' % sys.argv[1]        
+            print('[!] Unable to read %s' % sys.argv[1])
 
 if __name__ == '__main__':
     if len(sys.argv)>=2:
-        print "[i] Extracting from %s ..." % sys.argv[1]
+        print("[i] Extracting from %s ..." % sys.argv[1])
         extractor = ProtobufExtractor(sys.argv[1])
         extractor.extract()
-        print "[i] Done"
+        print("[i] Done")
     else:
-        print "[ Protod (Protobuf metadata extractor) (c) 2012 Sysdream  ]"
-        print ''
-        print '[i] Usage: %s [executable]' % sys.argv[0]
+        print("[ Protod (Protobuf metadata extractor) (c) 2012 Sysdream  ]")
+        print('')
+        print('[i] Usage: %s [executable]' % sys.argv[0])
