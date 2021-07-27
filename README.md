@@ -1,8 +1,9 @@
-Protod - Protobuf's metadata extractor
-(c) 2012, Sysdream (d.cauquil@sysdream.com)
+# PROTOD3 - Protobuf's metadata extractor
 
-WHAT IS PROTOD ?
-----------------
+A python3 port of PROTOD that was written for python2 with some cosmetic improvments.
+
+
+## What is PROTOD?
 
 Protod is a tool able to extract Google's protobuf metadata from any binary
 file. This version has been designed to cover every file format.
@@ -16,18 +17,15 @@ For further information on Google's protobuf library, please see:
 https://developers.google.com/protocol-buffers/docs/overview
 
 
-HOW TO USE THIS TOOL ?
-----------------------
+## How to use this tool?
 
 Its usage is very simple. Here is a sample:
-
 To extract every metadata file (.proto) from a given executable:
-
+```bash
 $ python protod.py somebinary
+```
 
-
-IS THIS TOOL LIMITED ?
-----------------------
+## Is this tool limited?
 
 Current version does not support every kind of fields, we are aware of this.
 It was developed as a proof-of-concept to demonstrate this technique, and of
@@ -37,8 +35,7 @@ Feel free to fork this project on Github, and let us know about your issues
 and ideas !
 
 
-THANKS
-------
+## THANKS
 
 Great thanks to UNclePecos for his time, and all the Sysdream's staff for
 their support.
